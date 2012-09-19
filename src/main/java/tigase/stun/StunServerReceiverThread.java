@@ -1,6 +1,6 @@
 /*
- * XTigase XMPP Server
- * Copyright (C) 2009 "Andrzej Wójcik" <andrzej@hi-low.eu>
+ * Tigase XMPP STUN Component
+ * Copyright (C) 2012 "Andrzej Wójcik" <andrzej.wojcik@tigase.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. Look for COPYING file in the top folder.
  * If not, see http://www.gnu.org/licenses/.
- *
- * Last modified by $Author: andrzej $
- * $Date: 2009-05-09 19:11:43 +0200 (So 09.05.2009) $
  */
 package tigase.stun;
 
@@ -44,8 +41,11 @@ public class StunServerReceiverThread extends Thread {
         private DatagramSocket changedPortIP;
         private boolean shutdown;
 
-        public StunServerReceiverThread(DatagramSocket receiver, Vector<DatagramSocket> sockets) {
+        private StatisticsCollector statsCollector;
+        
+        public StunServerReceiverThread(DatagramSocket receiver, Vector<DatagramSocket> sockets, StatisticsCollector statsCollector) {
                 receiverSocket = receiver;
+                this.statsCollector = statsCollector;
                 for (DatagramSocket socket : sockets) {
                         if ((socket.getLocalPort() != receiverSocket.getLocalPort()) && (socket.getLocalAddress() == receiverSocket.getLocalAddress())) {
                                 changedPort = socket;
@@ -66,6 +66,7 @@ public class StunServerReceiverThread extends Thread {
                         try {
                                 DatagramPacket packet = new DatagramPacket(new byte[200], 200);
                                 receiverSocket.receive(packet);
+                                statsCollector.packetReceived();
                                 MessageHeader header = MessageHeader.parseHeader(packet.getData());
                                 try {
                                         header.parseAttributes(packet.getData());

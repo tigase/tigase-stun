@@ -1,6 +1,6 @@
 /*
- * XTigase XMPP Server
- * Copyright (C) 2009 "Andrzej Wójcik" <andrzej@hi-low.eu>
+ * Tigase XMPP STUN Component
+ * Copyright (C) 2012 "Andrzej Wójcik" <andrzej.wojcik@tigase.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. Look for COPYING file in the top folder.
  * If not, see http://www.gnu.org/licenses/.
- *
- * Last modified by $Author: andrzej $
- * $Date: 2009-05-09 19:11:43 +0200 (So 09.05.2009) $
  */
 package tigase.stun;
 
@@ -33,10 +30,11 @@ import java.util.logging.Logger;
 import tigase.conf.Configurable;
 import tigase.server.AbstractMessageReceiver;
 import tigase.server.Packet;
+import tigase.stats.StatisticsList;
 import tigase.xmpp.Authorization;
 import tigase.xmpp.PacketErrorTypeException;
 
-public class StunComponent extends AbstractMessageReceiver implements Configurable {
+public class StunComponent extends AbstractMessageReceiver implements Configurable, StatisticsCollector {
 
         private static final Logger log = Logger.getLogger(StunComponent.class.getCanonicalName());
         private static final String STUN_DISCO_DESCRIPTION = "STUN Component";
@@ -47,6 +45,16 @@ public class StunComponent extends AbstractMessageReceiver implements Configurab
         private Vector<DatagramSocket> sockets = null;
         private List<StunServerReceiverThread> threads = null;
 
+        private long packets_received = 0;
+        
+        private long packets_per_hour = 0;
+        private long packets_per_minute = 0;        
+        private long packets_per_second = 0;
+        
+        private long last_hour_packets = 0;
+        private long last_minute_packets = 0;
+        private long last_second_packets = 0;
+        
         @Override
         public void setProperties(Map<String, Object> props) {
                 super.setProperties(props);
@@ -102,7 +110,7 @@ public class StunComponent extends AbstractMessageReceiver implements Configurab
 
                 for (DatagramSocket socket : sockets) {
                         socket.setReceiveBufferSize(2000);
-                        StunServerReceiverThread ssrt = new StunServerReceiverThread(socket, sockets);
+                        StunServerReceiverThread ssrt = new StunServerReceiverThread(socket, sockets, this);
                         threads.add(ssrt);
                         ssrt.start();
                 }
@@ -120,5 +128,64 @@ public class StunComponent extends AbstractMessageReceiver implements Configurab
                 } catch (PacketErrorTypeException ex) {
                         log.log(Level.WARNING, "bad packet type to return error = {0}", packet);
                 }
+        }
+        
+	/**
+	 * Utility method executed precisely every hour. A component can overwrite the
+	 * method to put own code to be executed at the regular intervals of time.
+	 * <p/>
+	 * Note, no extensive calculations should happen in this method nor long
+	 * lasting operations. It is essential that the method processing does not
+	 * exceed 1 hour. The overriding method must call the the super method first
+	 * and only then run own code.
+	 */
+	public synchronized void everyHour() {
+		packets_per_hour = packets_received - last_hour_packets;
+		last_hour_packets = packets_received;
+                super.everyHour();
+	}
+
+	/**
+	 * Utility method executed precisely every minute. A component can overwrite
+	 * the method to put own code to be executed at the regular intervals of time.
+	 * <p/>
+	 * Note, no extensive calculations should happen in this method nor long
+	 * lasting operations. It is essential that the method processing does not
+	 * exceed 1 minute. The overriding method must call the the super method first
+	 * and only then run own code.
+	 */
+	public synchronized void everyMinute() {
+		packets_per_minute = packets_received - last_minute_packets;
+		last_minute_packets = packets_received;
+		super.everyMinute();
+	}
+
+	/**
+	 * Utility method executed precisely every second. A component can overwrite
+	 * the method to put own code to be executed at the regular intervals of time.
+	 * <p/>
+	 * Note, no extensive calculations should happen in this method nor long
+	 * lasting operations. It is essential that the method processing does not
+	 * exceed 1 second. The overriding method must call the the super method first
+	 * and only then run own code.
+	 */
+	public synchronized void everySecond() {
+		packets_per_second = packets_received - last_second_packets;
+		last_second_packets = packets_received;
+                super.everySecond();
+	}
+                
+        @Override
+	public void getStatistics(StatisticsList list) {
+                super.getStatistics(list);
+                list.add(getName(), "Total STUN packets", packets_received, Level.FINE);
+		list.add(getName(), "Last second STUN packets", packets_per_second, Level.FINE);
+		list.add(getName(), "Last minute STUNB packets", packets_per_minute, Level.FINE);
+		list.add(getName(), "Last hour STUN packets", packets_per_hour, Level.FINE);
+        }        
+
+        @Override
+        public void packetReceived() {
+                packets_received++;
         }
 }
