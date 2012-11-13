@@ -2,11 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
         <modelVersion>4.0.0</modelVersion>
         <groupId>tigase</groupId>
-        <artifactId>tigase-stun</artifactId>
-        <name>Tigase STUN Component</name>
+        <artifactId>tigase-stun-osgi</artifactId>
+        <name>Tigase STUN Component OSGi bundle</name>
         <version>1.0.0-SNAPSHOT</version>
         <description>STUN server component for Tigase XMPP Server</description>
         <url>https://projects.tigase.org/projects/stun</url>
+        <packaging>bundle</packaging>
         <organization>
                 <name>Tigase</name>
                 <url>http://tigase.org</url>
@@ -24,13 +25,24 @@
                         <plugin>
                                 <artifactId>maven-pmd-plugin</artifactId>
                         </plugin>
+                        <plugin>
+                                <groupId>org.apache.felix</groupId>
+                                <artifactId>maven-bundle-plugin</artifactId>
+                                <extensions>true</extensions>
+                                <configuration>
+                                        <instructions>
+                                                <Bundle-Activator>tigase.stun.Activator</Bundle-Activator>
+                                        </instructions>
+                                </configuration>
+                        </plugin>
+                        
                 </plugins>
         </build>
         <dependencies>
                 <dependency>
                         <groupId>tigase</groupId>
-                        <artifactId>tigase-server</artifactId>
-                        <version>5.1.0-SNAPSHOT</version>
+                        <artifactId>tigase-server-osgi</artifactId>
+                        <version>5.2.0-SNAPSHOT</version>
                         <scope>compile</scope>
                 </dependency>
                 <dependency>
@@ -39,5 +51,12 @@
                         <version>0.7.3</version>
                         <scope>compile</scope>
                 </dependency>
+                <dependency>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>org.osgi.core</artifactId>
+                        <version>1.4.0</version>
+                        <scope>provided</scope>
+                        <type>bundle</type>
+                </dependency>                
         </dependencies>
 </project>
