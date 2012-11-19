@@ -27,7 +27,6 @@ import de.javawi.jstun.util.UtilityException;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,18 +34,18 @@ import java.util.logging.Logger;
 public class StunServerReceiverThread extends Thread {
 
         private static final Logger log = Logger.getLogger(StunServerReceiverThread.class.getCanonicalName());
-        private DatagramSocket receiverSocket;
-        private DatagramSocket changedPort;
-        private DatagramSocket changedIP;
-        private DatagramSocket changedPortIP;
+        private StunSocket receiverSocket;
+        private StunSocket changedPort;
+        private StunSocket changedIP;
+        private StunSocket changedPortIP;
         private boolean shutdown;
 
         private StatisticsCollector statsCollector;
         
-        public StunServerReceiverThread(DatagramSocket receiver, Vector<DatagramSocket> sockets, StatisticsCollector statsCollector) {
+        public StunServerReceiverThread(StunSocket receiver, Vector<StunSocket> sockets, StatisticsCollector statsCollector) {
                 receiverSocket = receiver;
                 this.statsCollector = statsCollector;
-                for (DatagramSocket socket : sockets) {
+                for (StunSocket socket : sockets) {
                         if ((socket.getLocalPort() != receiverSocket.getLocalPort()) && (socket.getLocalAddress() == receiverSocket.getLocalAddress())) {
                                 changedPort = socket;
                         }
@@ -87,14 +86,14 @@ public class StunServerReceiverThread extends Thread {
                                                 sendMH.addMessageAttribute(ma);
                                                 // Changed address attribute
                                                 ChangedAddress ca = new ChangedAddress();
-                                                ca.setAddress(new Address(changedPortIP.getLocalAddress().getAddress()));
-                                                ca.setPort(changedPortIP.getLocalPort());
+                                                ca.setAddress(new Address(changedPortIP.getExternalAddress().getAddress()));
+                                                ca.setPort(changedPortIP.getExternalPort());
                                                 sendMH.addMessageAttribute(ca);
                                                 if (cr.isChangePort() && (!cr.isChangeIP())) {
                                                         // Source address attribute
                                                         SourceAddress sa = new SourceAddress();
-                                                        sa.setAddress(new Address(changedPort.getLocalAddress().getAddress()));
-                                                        sa.setPort(changedPort.getLocalPort());
+                                                        sa.setAddress(new Address(changedPort.getExternalAddress().getAddress()));
+                                                        sa.setPort(changedPort.getExternalPort());
                                                         sendMH.addMessageAttribute(sa);
                                                         byte[] data = sendMH.getBytes();
                                                         DatagramPacket send = new DatagramPacket(data, data.length);
@@ -109,8 +108,8 @@ public class StunServerReceiverThread extends Thread {
                                                 } else if ((!cr.isChangePort()) && cr.isChangeIP()) {
                                                         // Source address attribute
                                                         SourceAddress sa = new SourceAddress();
-                                                        sa.setAddress(new Address(changedIP.getLocalAddress().getAddress()));
-                                                        sa.setPort(changedIP.getLocalPort());
+                                                        sa.setAddress(new Address(changedIP.getExternalAddress().getAddress()));
+                                                        sa.setPort(changedIP.getExternalPort());
                                                         sendMH.addMessageAttribute(sa);
                                                         byte[] data = sendMH.getBytes();
                                                         DatagramPacket send = new DatagramPacket(data, data.length);
@@ -125,8 +124,8 @@ public class StunServerReceiverThread extends Thread {
                                                 } else if ((!cr.isChangePort()) && (!cr.isChangeIP())) {
                                                         // Source address attribute
                                                         SourceAddress sa = new SourceAddress();
-                                                        sa.setAddress(new Address(receiverSocket.getLocalAddress().getAddress()));
-                                                        sa.setPort(receiverSocket.getLocalPort());
+                                                        sa.setAddress(new Address(receiverSocket.getExternalAddress().getAddress()));
+                                                        sa.setPort(receiverSocket.getExternalPort());
                                                         sendMH.addMessageAttribute(sa);
                                                         byte[] data = sendMH.getBytes();
                                                         DatagramPacket send = new DatagramPacket(data, data.length);
@@ -141,8 +140,8 @@ public class StunServerReceiverThread extends Thread {
                                                 } else if (cr.isChangePort() && cr.isChangeIP()) {
                                                         // Source address attribute
                                                         SourceAddress sa = new SourceAddress();
-                                                        sa.setAddress(new Address(changedPortIP.getLocalAddress().getAddress()));
-                                                        sa.setPort(changedPortIP.getLocalPort());
+                                                        sa.setAddress(new Address(changedPortIP.getExternalAddress().getAddress()));
+                                                        sa.setPort(changedPortIP.getExternalPort());
                                                         sendMH.addMessageAttribute(sa);
                                                         byte[] data = sendMH.getBytes();
                                                         DatagramPacket send = new DatagramPacket(data, data.length);
