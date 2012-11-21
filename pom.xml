@@ -46,4 +46,14 @@
                         <scope>compile</scope>
                 </dependency>
         </dependencies>
+	<repositories>
+		<repository>
+			<id>tigase</id>
+			<name>Tigase repository</name>
+			<url>http://maven.tigase.org</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>		
 </project>
