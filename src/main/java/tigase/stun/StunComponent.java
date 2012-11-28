@@ -17,16 +17,26 @@
  */
 package tigase.stun;
 
+import java.io.File;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.tigase.licence.Licence;
+import org.tigase.licence.LicenceLoader;
+import org.tigase.licence.LicenceLoaderFactory;
+
 import tigase.conf.Configurable;
 import tigase.server.AbstractMessageReceiver;
 import tigase.server.Packet;
@@ -39,10 +49,14 @@ public class StunComponent extends AbstractMessageReceiver implements Configurab
         private static final Logger log = Logger.getLogger(StunComponent.class.getCanonicalName());
         private static final String STUN_DISCO_DESCRIPTION = "STUN Component";
         private static final String PRIMARY_IP_KEY = "stun-primary-ip";
+        private static final String PRIMARY_EXTERNAL_IP_KEY = "stun-primary-external-ip";
         private static final String PRIMARY_PORT_KEY = "stun-primary-port";
+        private static final String PRIMARY_EXTERNAL_PORT_KEY = "stun-primary-external-port";
         private static final String SECONDARY_IP_KEY = "stun-secondary-ip";
+        private static final String SECONDARY_EXTERNAL_IP_KEY = "stun-secondary-external-ip";
         private static final String SECONDARY_PORT_KEY = "stun-secondary-port";
-        private Vector<DatagramSocket> sockets = null;
+        private static final String SECONDARY_EXTERNAL_PORT_KEY = "stun-secondary-external-port";
+        private Vector<StunSocket> sockets = null;
         private List<StunServerReceiverThread> threads = null;
 
         private long packets_received = 0;
@@ -54,6 +68,42 @@ public class StunComponent extends AbstractMessageReceiver implements Configurab
         private long last_hour_packets = 0;
         private long last_minute_packets = 0;
         private long last_second_packets = 0;
+        
+    	private static final File LICENCE_FILE_DEF = new File("etc/stun.licence");
+
+	private Licence lic;
+        
+	public StunComponent() {
+		try {
+			final LicenceLoader loader = LicenceLoaderFactory.create();
+			if (!LICENCE_FILE_DEF.exists()) {
+				log.severe("Licence file doesn't exists!");
+				throw new RuntimeException("Licence file doesn't exists!");
+			}
+			lic = loader.loadLicence(LICENCE_FILE_DEF);
+
+			switch (lic.check()) {
+			case invalidDates:
+				log.severe("Licence is expired.");
+				throw new RuntimeException("Licence is expired.");
+			case invalidSignature:
+				log.severe("Invalid or modified licence file");
+				throw new RuntimeException("Invalid or modified licence file");
+			case valid:
+				break;
+			}
+
+			String appId = lic.getPropertyAsString("app-id");
+			if (appId == null || !appId.equals("stun")) {
+				log.severe("This is not licence for STUN Component!");
+				throw new RuntimeException("This is not licence for STUN Component!");
+			}
+
+		} catch (Exception e) {
+			log.severe("Can't load licence file. Error: " + e.getMessage());
+			throw new RuntimeException("Can't load licence file. Error: " + e.getMessage());
+		}
+	}
         
         @Override
         public void setProperties(Map<String, Object> props) {
@@ -95,7 +145,7 @@ public class StunComponent extends AbstractMessageReceiver implements Configurab
                         threads = new LinkedList<StunServerReceiverThread>();
                 }
                 if (sockets == null) {
-                        sockets = new Vector<DatagramSocket>();
+                        sockets = new Vector<StunSocket>();
                 }
 
                 InetAddress primaryAddress = InetAddress.getByName((String) props.get(PRIMARY_IP_KEY));
@@ -103,12 +153,31 @@ public class StunComponent extends AbstractMessageReceiver implements Configurab
                 InetAddress secondaryAddress = InetAddress.getByName((String) props.get(SECONDARY_IP_KEY));
                 int secondaryPort = (Integer) props.get(SECONDARY_PORT_KEY);
 
-                sockets.add(new DatagramSocket(primaryPort, primaryAddress));
-                sockets.add(new DatagramSocket(secondaryPort, primaryAddress));
-                sockets.add(new DatagramSocket(primaryPort, secondaryAddress));
-                sockets.add(new DatagramSocket(secondaryPort, secondaryAddress));
+                InetAddress primaryExternalAddress = primaryAddress;
+                int primaryExternalPort = primaryPort;
+                InetAddress secondaryExternalAddress = secondaryAddress;
+                int secondaryExternalPort = secondaryPort;
+                
+                if (props.containsKey(PRIMARY_EXTERNAL_IP_KEY)) {
+                        primaryExternalAddress = InetAddress.getByName((String) props.get(PRIMARY_EXTERNAL_IP_KEY));
+                }
+                if (props.containsKey(PRIMARY_EXTERNAL_PORT_KEY)) {
+                        primaryExternalPort = (Integer) props.get(PRIMARY_EXTERNAL_PORT_KEY);
+                }
+                
+                if (props.containsKey(SECONDARY_EXTERNAL_IP_KEY)) {
+                        secondaryExternalAddress = InetAddress.getByName((String) props.get(SECONDARY_EXTERNAL_IP_KEY));
+                }
+                if (props.containsKey(SECONDARY_EXTERNAL_PORT_KEY)) {
+                        secondaryExternalPort = (Integer) props.get(SECONDARY_EXTERNAL_PORT_KEY);
+                }
 
-                for (DatagramSocket socket : sockets) {
+                sockets.add(new StunSocket(primaryPort, primaryAddress, primaryExternalPort, primaryExternalAddress));
+                sockets.add(new StunSocket(secondaryPort, primaryAddress, secondaryExternalPort, primaryExternalAddress));
+                sockets.add(new StunSocket(primaryPort, secondaryAddress, primaryExternalPort, secondaryExternalAddress));
+                sockets.add(new StunSocket(secondaryPort, secondaryAddress, secondaryExternalPort, secondaryExternalAddress));
+
+                for (StunSocket socket : sockets) {
                         socket.setReceiveBufferSize(2000);
                         StunServerReceiverThread ssrt = new StunServerReceiverThread(socket, sockets, this);
                         threads.add(ssrt);
@@ -140,9 +209,25 @@ public class StunComponent extends AbstractMessageReceiver implements Configurab
 	 * and only then run own code.
 	 */
 	public synchronized void everyHour() {
+		try {
+			switch (lic.check()) {
+			case invalidDates:
+				log.severe("Licence is expired.");
+				System.exit(402);
+			case invalidSignature:
+				log.severe("Invalid or modified licence file");
+				System.exit(402);
+			case valid:
+				break;
+			}
+		} catch (Exception e) {
+			log.log(Level.SEVERE, "Licence invalid", e);
+			System.exit(402);
+		}
+
 		packets_per_hour = packets_received - last_hour_packets;
 		last_hour_packets = packets_received;
-                super.everyHour();
+		super.everyHour();
 	}
 
 	/**
