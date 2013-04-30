@@ -73,7 +73,6 @@ public class StunComponent
 	private static final String SECONDARY_IP_KEY       = "stun-secondary-ip";
 	private static final String SECONDARY_PORT_KEY     = "stun-secondary-port";
 	private static final String STUN_DISCO_DESCRIPTION = "STUN Component";
-	private static final File LICENCE_FILE_DEF         = new File("etc/stun.licence");
 
 	//~--- fields ---------------------------------------------------------------
 
@@ -97,35 +96,6 @@ public class StunComponent
 	 */
 	public StunComponent() {
 
-//  try {
-//    final LicenceLoader loader = LicenceLoaderFactory.create();
-//    if (!LICENCE_FILE_DEF.exists()) {
-//      log.severe("Licence file doesn't exists!");
-//      throw new RuntimeException("Licence file doesn't exists!");
-//    }
-//    lic = loader.loadLicence(LICENCE_FILE_DEF);
-//
-//    switch (lic.check()) {
-//    case invalidDates:
-//      log.severe("Licence is expired.");
-//      throw new RuntimeException("Licence is expired.");
-//    case invalidSignature:
-//      log.severe("Invalid or modified licence file");
-//      throw new RuntimeException("Invalid or modified licence file");
-//    case valid:
-//      break;
-//    }
-//
-//    String appId = lic.getPropertyAsString("app-id");
-//    if (appId == null || !appId.equals("stun")) {
-//      log.severe("This is not licence for STUN Component!");
-//      throw new RuntimeException("This is not licence for STUN Component!");
-//    }
-//
-//  } catch (Exception e) {
-//    log.severe("Can't load licence file. Error: " + e.getMessage());
-//    throw new RuntimeException("Can't load licence file. Error: " + e.getMessage());
-//  }
 	}
 
 	//~--- set methods ----------------------------------------------------------
@@ -276,21 +246,6 @@ public class StunComponent
 	 */
 	public synchronized void everyHour() {
 
-//  try {
-//    switch (lic.check()) {
-//    case invalidDates:
-//      log.severe("Licence is expired.");
-//      System.exit(402);
-//    case invalidSignature:
-//      log.severe("Invalid or modified licence file");
-//      System.exit(402);
-//    case valid:
-//      break;
-//    }
-//  } catch (Exception e) {
-//    log.log(Level.SEVERE, "Licence invalid", e);
-//    System.exit(402);
-//  }
 		packets_per_hour  = packets_received - last_hour_packets;
 		last_hour_packets = packets_received;
 		super.everyHour();
