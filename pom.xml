@@ -4,7 +4,7 @@
 	<groupId>tigase</groupId>
 	<artifactId>tigase-stun</artifactId>
 	<name>Tigase STUN Component</name>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.0.0-tigase-5.2.0-beta3</version>
 	<description>STUN server component for Tigase XMPP Server</description>
 	<url>https://projects.tigase.org/projects/stun</url>
 	<packaging>bundle</packaging>
