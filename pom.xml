@@ -95,6 +95,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions combine.inherited="append">
+						<Implementation-Title>${project.name}</Implementation-Title>
 						<manifestLocation>src/main/resources/META-INF/MANIFEST.MF</manifestLocation>
 						<Implementation-Version>${project.version}-b${gitVersion}/${buildNumber}</Implementation-Version>
 						<Implementation-Build>${gitVersion}/${buildNumber} (${maven.build.timestamp})</Implementation-Build>
