@@ -129,7 +129,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.javawi</groupId>
-			<artifactId>jstun</artifactId>
+			<artifactId>jstun-osgi</artifactId>
 			<version>0.7.3</version>
 			<scope>compile</scope>
 		</dependency>
