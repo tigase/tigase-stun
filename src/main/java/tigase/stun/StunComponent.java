@@ -25,15 +25,6 @@ package tigase.stun;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import tigase.conf.Configurable;
-
-import tigase.server.AbstractMessageReceiver;
-import tigase.server.Packet;
-
-import tigase.stats.StatisticsList;
-
-import tigase.xmpp.Authorization;
-import tigase.xmpp.PacketErrorTypeException;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -43,13 +34,19 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import tigase.conf.Configurable;
+import tigase.conf.ConfigurationException;
+import tigase.server.AbstractMessageReceiver;
+import tigase.server.Packet;
+import tigase.stats.StatisticsList;
+import tigase.xmpp.Authorization;
+import tigase.xmpp.PacketErrorTypeException;
 
 /**
  * Class description
@@ -105,9 +102,10 @@ public class StunComponent
 	 *
 	 *
 	 * @param props
+	 * @throws ConfigurationException
 	 */
 	@Override
-	public void setProperties(Map<String, Object> props) {
+	public void setProperties(Map<String, Object> props) throws ConfigurationException {
 		super.setProperties(props);
 		if (props.size() == 1) {
 			return;
