@@ -29,7 +29,17 @@
 		<url>https://projects.tigase.org/projects/stun/repository</url>
 	  <tag>HEAD</tag>
   </scm>
-	
+    <profiles>
+        <profile>
+            <id>disable-java8-doclint</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <additionalparam>-Xdoclint:none</additionalparam>
+            </properties>
+        </profile>
+    </profiles>	
 	<build>
 		<plugins>
 			<plugin>
