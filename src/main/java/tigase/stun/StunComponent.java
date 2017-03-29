@@ -28,8 +28,16 @@ package tigase.stun;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.io.File;
+import tigase.conf.Configurable;
+import tigase.conf.ConfigurationException;
+import tigase.kernel.beans.Bean;
+import tigase.server.AbstractMessageReceiver;
+import tigase.server.Packet;
+import tigase.stats.StatisticsList;
+import tigase.xmpp.Authorization;
+import tigase.xmpp.PacketErrorTypeException;
 
+import java.awt.image.Kernel;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -40,13 +48,6 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tigase.conf.Configurable;
-import tigase.conf.ConfigurationException;
-import tigase.server.AbstractMessageReceiver;
-import tigase.server.Packet;
-import tigase.stats.StatisticsList;
-import tigase.xmpp.Authorization;
-import tigase.xmpp.PacketErrorTypeException;
 
 /**
  * Class description
@@ -55,6 +56,7 @@ import tigase.xmpp.PacketErrorTypeException;
  * @version        Enter version here..., 13/02/16
  * @author         Enter your name here...
  */
+@Bean(name = "stun", parent = Kernel.class, active = false)
 public class StunComponent
 				extends AbstractMessageReceiver
 				implements Configurable, StatisticsCollector {
