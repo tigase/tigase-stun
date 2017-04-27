@@ -31,6 +31,8 @@ package tigase.stun;
 import tigase.conf.Configurable;
 import tigase.conf.ConfigurationException;
 import tigase.kernel.beans.Bean;
+import tigase.kernel.beans.selector.ConfigType;
+import tigase.kernel.beans.selector.ConfigTypeEnum;
 import tigase.server.AbstractMessageReceiver;
 import tigase.server.Packet;
 import tigase.stats.StatisticsList;
@@ -57,6 +59,7 @@ import java.util.logging.Logger;
  * @author         Enter your name here...
  */
 @Bean(name = "stun", parent = Kernel.class, active = false)
+@ConfigType(ConfigTypeEnum.DefaultMode)
 public class StunComponent
 				extends AbstractMessageReceiver
 				implements Configurable, StatisticsCollector {
