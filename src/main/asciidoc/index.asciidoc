@@ -1,0 +1,12 @@
+= Tigase STUN Component
+Tigase Team <team@tigase.net>
+:toc:
+:numbered:
+:website: http://tigase.net
+
+Welcome to Tigase STUN component guide
+
+:leveloffset: 1
+
+include::text/Overview.asciidoc[]
+include::text/Configuration.asciidoc[]

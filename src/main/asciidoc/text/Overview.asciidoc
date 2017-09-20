@@ -1,0 +1,17 @@
+[[STUNComp]]
+= Tigase STUN Component
+:author: Daniel Wisnewski
+:version: v1.0, September 2017: Reformatted for v7.2.0
+
+:toc:
+:numbered:
+:website: http://www.tigase.net
+
+Tigase STUN Component allows for the use of a STUN server to handle XMPP and related communications to allow for smoother server operations behind a NAT.
+
+== What is STUN?
+STUN stands for Simple Traversal of UDP[User Datagram Protocol] Through NAT[Network Address Translators].  It allows for computers behind a NAT router to host and provide UDP information without having to create rule exceptions on the router, or provide specific information to the NAT service.
+When specified within Tigase, XMPP and UDP communications can be directed to a specific STUN server which will then handle incoming requests to your network.  You may use a public, or your own STUN server with Tigase.
+
+== Requirements
+The only requirement (aside from configuration) is that you are operating on a network that is not a Symmetric NAT as STUN by itself will not function correctly.
