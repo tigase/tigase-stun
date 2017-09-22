@@ -8,19 +8,19 @@
 :website: http://www.tigase.net
 
 
-Below is an example configuration for STUN component.  Note that the 4 `stun-primary`settings are required, where secondaries are not.
+Below is an example configuration for STUN component.  Note that the 4 `stun-primary` and `stun-secondary` settings are required, where external settings are not.
 
 [source,dsl]
 -----
 stun (class: tigase.stun.StunComponent) {
-    'stun-primary-external-ip' = '172.16.0.22'
-    'stun-primary-external-port' = 3479
     'stun-primary-ip' = '10.0.0.1'
     'stun-primary-port' = 3478
-    'stun-secondary-external-ip' = '172.16.0.23'
-    'stun-secondary-external-port' = 7002
     'stun-secondary-ip' = '10.0.0.2'
     'stun-secondary-port' = 7001
+    'stun-primary-external-ip' = '172.16.0.22'
+    'stun-primary-external-port' = 3479
+    'stun-secondary-external-ip' = '172.16.0.23'
+    'stun-secondary-external-port' = 7002
 }
 -----
 
@@ -30,13 +30,13 @@ NOTE: Primary port should be set to 3478 as it is default port for STUN servers.
 
 . `stun-primary-ip` - primary IP address of STUN server used for binding (and sending to client if stun-primary-external-ip)
 . `stun-primary-port` - primary port of STUN server used for binding (and sending to client if stun-primary-external-port)
-. `stun-primary-external-ip` - primary external IP address of STUN server used for sending to client if set
-. `stun-primary-external-port` - primary external port of STUN server used for sending to client if set
+. `stun-secondary-ip` - secondary IP address of STUN server used for binding (and sending to client if stun-secondary-external-ip)
+. `stun-secondary-ip` - secondary port of STUN server used for binding (and sending to client if stun-secondary-external-port)
 
 If you wish to have a secondary STUN server as a backup, or to provide multiple addresses for STUN services, the following may be used.
 
-. `stun-secondary-ip` - secondary IP address of STUN server used for binding (and sending to client if stun-secondary-external-ip)
-. `stun-secondary-ip` - secondary port of STUN server used for binding (and sending to client if stun-secondary-external-port)
+. `stun-primary-external-ip` - primary external IP address of STUN server used for sending to client if set
+. `stun-primary-external-port` - primary external port of STUN server used for sending to client if set
 . `stun-secondary-external-ip` - secondary external IP address of STUN server used for sending to client if set
 . `stun-secondary-external-port` - secondary external port of STUN server used for sending to client if set
 
