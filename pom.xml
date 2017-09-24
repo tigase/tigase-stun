@@ -118,6 +118,7 @@
 						<manifestLocation>src/main/resources/META-INF/MANIFEST.MF</manifestLocation>
 						<Implementation-Version>${project.version}-b${gitVersion}/${buildNumber}</Implementation-Version>
 						<Implementation-Build>${gitVersion}/${buildNumber} (${maven.build.timestamp})</Implementation-Build>
+						<Tigase-Required-Dependencies>tigase.server=${project.dependencies[0].version}</Tigase-Required-Dependencies>
 						<Bundle-Activator>tigase.stun.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>
