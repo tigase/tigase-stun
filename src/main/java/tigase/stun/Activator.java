@@ -19,87 +19,83 @@
  */
 package tigase.stun;
 
-import java.util.logging.Logger;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 import tigase.osgi.ModulesManager;
 
+import java.util.logging.Logger;
+
 /**
- *
  * @author andrzej
  */
-public class Activator implements BundleActivator, ServiceListener {
+public class Activator
+		implements BundleActivator, ServiceListener {
 
-        private static final Logger log = Logger.getLogger(Activator.class.getCanonicalName());
-        private Class<StunComponent> stunComponentClass = null;
-        private BundleContext context = null;
-        private ServiceReference serviceReference = null;
-        private ModulesManager serviceManager = null;
+	private static final Logger log = Logger.getLogger(Activator.class.getCanonicalName());
+	private BundleContext context = null;
+	private ModulesManager serviceManager = null;
+	private ServiceReference serviceReference = null;
+	private Class<StunComponent> stunComponentClass = null;
 
-        @Override
-        public void start(BundleContext bc) throws Exception {
-                synchronized (this) {
-                        context = bc;
-                        log.info("register service listener");
-                        bc.addServiceListener(this, "(&(objectClass=" + ModulesManager.class.getName() + "))");
-                        log.info("create instance");
-                        stunComponentClass = StunComponent.class;
-                        serviceReference = bc.getServiceReference(ModulesManager.class.getName());
-                        if (serviceReference != null) {
-                                log.info("getting service manager");
-                                serviceManager = (ModulesManager) bc.getService(serviceReference);
-                                log.info("registering addons");
-                                registerAddons();
-                        }
-                }
-        }
+	@Override
+	public void start(BundleContext bc) throws Exception {
+		synchronized (this) {
+			context = bc;
+			log.info("register service listener");
+			bc.addServiceListener(this, "(&(objectClass=" + ModulesManager.class.getName() + "))");
+			log.info("create instance");
+			stunComponentClass = StunComponent.class;
+			serviceReference = bc.getServiceReference(ModulesManager.class.getName());
+			if (serviceReference != null) {
+				log.info("getting service manager");
+				serviceManager = (ModulesManager) bc.getService(serviceReference);
+				log.info("registering addons");
+				registerAddons();
+			}
+		}
+	}
 
-        @Override
-        public void stop(BundleContext bc) throws Exception {
-                synchronized (this) {
-                        if (serviceManager != null) {
-                                unregisterAddons();
-                                context.ungetService(serviceReference);
-                                serviceManager = null;
-                                serviceReference = null;
-                        }
-                        stunComponentClass = null;
-                }
-        }
+	@Override
+	public void stop(BundleContext bc) throws Exception {
+		synchronized (this) {
+			if (serviceManager != null) {
+				unregisterAddons();
+				context.ungetService(serviceReference);
+				serviceManager = null;
+				serviceReference = null;
+			}
+			stunComponentClass = null;
+		}
+	}
 
-        @Override
-        public void serviceChanged(ServiceEvent event) {
-                if (event.getType() == ServiceEvent.REGISTERED) {
-                        if (serviceReference == null) {
-                                serviceReference = event.getServiceReference();
-                                serviceManager = (ModulesManager) context.getService(serviceReference);
-                                registerAddons();
-                        }
-                }
-                else if (event.getType() == ServiceEvent.UNREGISTERING) {
-                        if (serviceReference == event.getServiceReference()) {
-                                unregisterAddons();
-                                context.ungetService(serviceReference);
-                                serviceManager = null;
-                                serviceReference = null;
-                        }
-                }
-        }
+	@Override
+	public void serviceChanged(ServiceEvent event) {
+		if (event.getType() == ServiceEvent.REGISTERED) {
+			if (serviceReference == null) {
+				serviceReference = event.getServiceReference();
+				serviceManager = (ModulesManager) context.getService(serviceReference);
+				registerAddons();
+			}
+		} else if (event.getType() == ServiceEvent.UNREGISTERING) {
+			if (serviceReference == event.getServiceReference()) {
+				unregisterAddons();
+				context.ungetService(serviceReference);
+				serviceManager = null;
+				serviceReference = null;
+			}
+		}
+	}
 
-        private void registerAddons() {
-                if (serviceManager != null) {
-                        serviceManager.registerServerComponentClass(stunComponentClass);
-                        serviceManager.update();
-                }
-        }
+	private void registerAddons() {
+		if (serviceManager != null) {
+			serviceManager.registerServerComponentClass(stunComponentClass);
+			serviceManager.update();
+		}
+	}
 
-        private void unregisterAddons() {
-                if (serviceManager != null) {
-                        serviceManager.unregisterServerComponentClass(stunComponentClass);
-                        serviceManager.update();
-                }
-        }
+	private void unregisterAddons() {
+		if (serviceManager != null) {
+			serviceManager.unregisterServerComponentClass(stunComponentClass);
+			serviceManager.update();
+		}
+	}
 }

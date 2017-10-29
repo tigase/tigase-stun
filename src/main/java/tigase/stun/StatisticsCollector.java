@@ -25,11 +25,10 @@
 package tigase.stun;
 
 /**
- *
  * @author andrzej
  */
 public interface StatisticsCollector {
-        
-        void packetReceived();
-        
+
+	void packetReceived();
+
 }
