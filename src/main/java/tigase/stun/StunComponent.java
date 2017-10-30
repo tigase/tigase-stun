@@ -20,10 +20,6 @@
 
 package tigase.stun;
 
-//~--- non-JDK imports --------------------------------------------------------
-
-//~--- JDK imports ------------------------------------------------------------
-
 import tigase.conf.Configurable;
 import tigase.conf.ConfigurationException;
 import tigase.kernel.beans.Bean;
@@ -47,12 +43,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Class description
- *
- * @author Enter your name here...
- * @version Enter version here..., 13/02/16
- */
 @Bean(name = "stun", parent = Kernel.class, active = false)
 @ConfigType(ConfigTypeEnum.DefaultMode)
 public class StunComponent
@@ -70,8 +60,6 @@ public class StunComponent
 	private static final String SECONDARY_PORT_KEY = "stun-secondary-port";
 	private static final String STUN_DISCO_DESCRIPTION = "STUN Component";
 
-	//~--- fields ---------------------------------------------------------------
-
 	private long last_hour_packets = 0;
 	private long last_minute_packets = 0;
 	private long last_second_packets = 0;
@@ -82,26 +70,10 @@ public class StunComponent
 	private Vector<StunSocket> sockets = null;
 	private List<StunServerReceiverThread> threads = null;
 
-	//~--- constructors ---------------------------------------------------------
-
-//private Licence lic;
-
-	/**
-	 * Constructs ...
-	 */
 	public StunComponent() {
 
 	}
 
-	//~--- set methods ----------------------------------------------------------
-
-	/**
-	 * Method description
-	 *
-	 * @param props
-	 *
-	 * @throws ConfigurationException
-	 */
 	@Override
 	public void setProperties(Map<String, Object> props) throws ConfigurationException {
 		super.setProperties(props);
@@ -118,11 +90,6 @@ public class StunComponent
 		}
 	}
 
-	//~--- methods --------------------------------------------------------------
-
-	/**
-	 * Method description
-	 */
 	public void deinit() {
 		if (threads != null) {
 			for (StunServerReceiverThread thread : threads) {
@@ -138,14 +105,6 @@ public class StunComponent
 		}
 	}
 
-	/**
-	 * Method description
-	 *
-	 * @param props
-	 *
-	 * @throws SocketException
-	 * @throws UnknownHostException
-	 */
 	public void init(Map<String, Object> props) throws UnknownHostException, SocketException {
 		if (threads == null) {
 			threads = new LinkedList<StunServerReceiverThread>();
@@ -189,25 +148,11 @@ public class StunComponent
 		}
 	}
 
-	//~--- get methods ----------------------------------------------------------
-
-	/**
-	 * Method description
-	 *
-	 * @return
-	 */
 	@Override
 	public String getDiscoDescription() {
 		return STUN_DISCO_DESCRIPTION;
 	}
 
-	//~--- methods --------------------------------------------------------------
-
-	/**
-	 * Method description
-	 *
-	 * @param packet
-	 */
 	@Override
 	public void processPacket(Packet packet) {
 		try {
@@ -260,13 +205,6 @@ public class StunComponent
 		super.everySecond();
 	}
 
-	//~--- get methods ----------------------------------------------------------
-
-	/**
-	 * Method description
-	 *
-	 * @param list
-	 */
 	@Override
 	public void getStatistics(StatisticsList list) {
 		super.getStatistics(list);
@@ -276,11 +214,6 @@ public class StunComponent
 		list.add(getName(), "Last hour STUN packets", packets_per_hour, Level.FINE);
 	}
 
-	//~--- methods --------------------------------------------------------------
-
-	/**
-	 * Method description
-	 */
 	@Override
 	public void packetReceived() {
 		packets_received++;
