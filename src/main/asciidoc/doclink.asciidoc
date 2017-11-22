@@ -1,6 +1,6 @@
 
 
-// document linking pubsub documentation to normal documentation
+// document linking STUN documentation to normal documentation
 
 include::text/Overview.asciidoc[]
 

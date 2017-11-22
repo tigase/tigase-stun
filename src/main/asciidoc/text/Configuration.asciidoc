@@ -1,14 +1,14 @@
 [[sTUNConfig]]
 = Configuration
 :author: Daniel Wisnewski
-:version: v1.0, September 2017: Reformatted for v7.2.0
+:version: v1.0, September 2017: Reformatted for v8.0.0.
 
 :toc:
 :numbered:
 :website: http://www.tigase.net
 
 
-Below is an example configuration for STUN component.  Note that the 4 `stun-primary` and `stun-secondary` settings are required, where external settings are not.
+Below is an example configuration for STUN component.  Note that the 2 `stun-primary` and 2 `stun-secondary` settings are required, where external settings are not.
 
 [source,dsl]
 -----
@@ -49,7 +49,7 @@ To do this, specify the logback xml file within java options in the `tigase.conf
 -----
 JAVA_OPTIONS="-Dlogback.configurationFile=etc/logback.xml"
 -----
-You may configure the logback by editing the xml included with distrobutions at logback.xml.
+You may configure the logback by editing the xml included with distributions at logback.xml.
 
 What is included is a basic logback configuration that just adds the stun logging.
 
