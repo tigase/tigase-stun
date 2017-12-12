@@ -1,9 +1,0 @@
-
-
-// document linking STUN documentation to normal documentation
-
-include::text/Overview.asciidoc[]
-
-:leveloffset: 3
-
-include::text/Configuration.asciidoc[]

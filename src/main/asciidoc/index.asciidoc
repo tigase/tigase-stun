@@ -6,7 +6,5 @@ Tigase Team <team@tigase.net>
 
 Welcome to Tigase STUN component guide
 
-:leveloffset: 1
-
-include::text/Overview.asciidoc[]
-include::text/Configuration.asciidoc[]
+include::text/Overview.asciidoc[leveloffset=+1]
+include::text/Configuration.asciidoc[leveloffset=+1]
