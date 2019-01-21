@@ -1,8 +1,6 @@
-/*
- * StunServerReceiverThread.java
- *
- * Tigase XMPP STUN Component
- * Copyright (C) 2004-2017 "Tigase, Inc." <office@tigase.com>
+/**
+ * Tigase STUN Component - STUN server component for Tigase XMPP Server
+ * Copyright (C) 2012 Tigase, Inc. (office@tigase.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
