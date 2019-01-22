@@ -25,8 +25,8 @@
     <inceptionYear>2012</inceptionYear>
     
     <scm>
-        <connection>scm:git:https://repository.tigase.org/git/stun.git</connection>
-        <developerConnection>scm:git:https://repository.tigase.org/git/stun.git</developerConnection>
+        <connection>scm:git:${scm_repo_base}/stun.git</connection>
+        <developerConnection>scm:git:${scm_repo_base}/stun.git</developerConnection>
         <url>https://projects.tigase.org/projects/stun/repository</url>
         <tag>HEAD</tag>
     </scm>
