@@ -160,9 +160,10 @@ public class StunComponent
 	}
 
 	/**
+	 * <p>
 	 * Utility method executed precisely every hour. A component can overwrite the method to put own code to be executed
 	 * at the regular intervals of time.
-	 * <p/>
+	 * </p>
 	 * Note, no extensive calculations should happen in this method nor long lasting operations. It is essential that
 	 * the method processing does not exceed 1 hour. The overriding method must call the the super method first and only
 	 * then run own code.
@@ -175,9 +176,10 @@ public class StunComponent
 	}
 
 	/**
+	 * <p>
 	 * Utility method executed precisely every minute. A component can overwrite the method to put own code to be
 	 * executed at the regular intervals of time.
-	 * <p/>
+	 * </p>
 	 * Note, no extensive calculations should happen in this method nor long lasting operations. It is essential that
 	 * the method processing does not exceed 1 minute. The overriding method must call the the super method first and
 	 * only then run own code.
@@ -189,9 +191,10 @@ public class StunComponent
 	}
 
 	/**
+	 * <p>
 	 * Utility method executed precisely every second. A component can overwrite the method to put own code to be
 	 * executed at the regular intervals of time.
-	 * <p/>
+	 * </p>
 	 * Note, no extensive calculations should happen in this method nor long lasting operations. It is essential that
 	 * the method processing does not exceed 1 second. The overriding method must call the the super method first and
 	 * only then run own code.
