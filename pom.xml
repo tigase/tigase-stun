@@ -4,7 +4,7 @@
     <parent>
         <groupId>tigase</groupId>
         <artifactId>tigase-projects-parent</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.4-SNAPSHOT</version>
         <relativePath />
     </parent>
 
@@ -36,9 +36,6 @@
             <activation>
                 <jdk>[1.8,)</jdk>
             </activation>
-            <properties>
-                <additionalparam>-Xdoclint:none</additionalparam>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -48,9 +45,6 @@
                             <execution>
                                 <id>attach-javadocs</id>
                                 <phase>generate-resources</phase>
-                                <configuration>
-                                    <doclint>none</doclint>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
